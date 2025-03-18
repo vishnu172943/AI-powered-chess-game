@@ -1,133 +1,100 @@
-# Kids Chess Game
+# AI-Powered Kids Chess Game
 
-A modern, interactive chess game built with React, featuring an AI opponent and a friendly chess coach. Perfect for kids learning chess!
+An interactive chess learning platform designed for kids, featuring AI assistance and a friendly chess coach.
 
-🎮 **[Play Live Demo](https://ai-powered-chess-game.vercel.app/)**
+## 🎮 Live Demo
+**[Play Now](https://ai-powered-chess-game.vercel.app/)**
 
-## Live Demo
-The game is deployed and playable at: https://ai-powered-chess-game.vercel.app/
+## ✨ Key Features
 
-Features available in the live demo:
-- Full gameplay functionality
-- AI opponent
-- Interactive chess coach
-- Multiplayer support
-- User authentication
-
-## Features
-
-### 🎮 Game Modes
-- **Single Player vs AI**
-  - Play against an AI opponent
-  - AI adapts to player's skill level
-  - Real-time move analysis
-
-- **Multiplayer**
-  - Play with friends online
-  - Shareable game IDs
-  - Real-time game synchronization
-  - Player status indicators
-
-### 🧙‍♂️ Interactive Chess Coach
-- Personal chess buddy that offers:
-  - Move suggestions
-  - Strategy tips
-  - Friendly conversation
-  - Real-time game analysis
-  - Kid-friendly explanations
-
-### 🎯 Game Features
-- Intuitive drag-and-drop interface
+### Intelligent Gameplay
+- Play against adaptive AI opponent
+- Real-time move analysis
+- Interactive chess coach for learning
 - Legal move highlighting
-- Move history with clear notations
-- Game state preservation
-- One-click game restart
-- Sound effects for moves and captures
+- Drag-and-drop interface
 
-### 👥 User Management
-- User authentication
-- Guest play option
-- Profile management
-- Game history tracking
+### Multiplayer Experience
+- Play with friends online
+- Easy game sharing with IDs
+- Real-time game synchronization
+- Move history tracking
 
-### 🎨 Kid-Friendly UI
-- Bright, engaging colors
-- Clear visual feedback
-- Emoji indicators
-- Animated pieces
-- Responsive design
+### Learning Tools
+- 🧙‍♂️ AI Chess Coach
+  - Friendly conversation
+  - Strategic advice
+  - Kid-friendly explanations
+  - Real-time position analysis
+- Visual move suggestions
+- Beginner-friendly interface
 
-### 🔒 Security
-- Firebase authentication
-- Secure game state management
-- Protected multiplayer sessions
+### Kid-Friendly Design
+- Clear, intuitive interface
+- Engaging animations
+- Sound effects
+- Progress tracking
+- Easy navigation
 
-## Technical Stack
-- React
-- Firebase (Authentication & Firestore)
-- chess.js for game logic
-- p5.js for board rendering
-- Google AI for chess coach
-- Real-time websocket connections
+## 🛠️ Technologies Used
+- **Frontend**: React, p5.js
+- **Backend**: Firebase
+- **AI/ML**: Google Gemini Pro API
+- **Game Logic**: chess.js
+- **Authentication**: Firebase Auth
+- **Database**: Firestore
 
-## Getting Started
+## 🚀 Getting Started
 
-### Play Online
-Visit [https://ai-powered-chess-game.vercel.app/](https://ai-powered-chess-game.vercel.app/) to play immediately.
+### Quick Start
+Visit [https://ai-powered-chess-game.vercel.app/](https://ai-powered-chess-game.vercel.app/)
 
-### Run Locally
-1. Clone the repository:
+### Local Development
+1. Clone the repository
 ```bash
-git clone [repository-url]
+git clone https://github.com/yourusername/chess-game-react.git
+cd chess-game-react
 ```
 
-2. Install dependencies:
+2. Install dependencies
 ```bash
 npm install
 ```
 
-3. Set up Firebase:
-   - Create a Firebase project
-   - Enable Authentication and Firestore
-   - Copy your Firebase config to `firebase.jsx`
+3. Set up environment variables
+```bash
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_GEMINI_API_KEY=your_gemini_api_key
+```
 
-4. Start the development server:
+4. Start development server
 ```bash
 npm run dev
 ```
 
-## Project Structure
-```
-src/
-├── components/         # React components
-│   ├── ChessBoard/    # Board rendering
-│   ├── ChessCoach/    # AI coach interface
-│   └── GameControls/  # Game management
-├── context/           # React context providers
-├── services/          # External services
-├── firebase/          # Firebase configuration
-└── utils/            # Helper functions
-```
+## 📖 How to Play
+1. **Sign In**: Create an account or play as guest
+2. **Choose Mode**: 
+   - Play vs AI
+   - Play with friend
+   - Practice mode
+3. **Move Pieces**: Drag and drop to move
+4. **Get Help**: Ask the chess coach for advice
+5. **Share Games**: Copy game ID to invite friends
 
-## Game Controls
-- **Left Click + Drag**: Move pieces
-- **Release**: Complete move
-- **Cancel**: Drag piece back or click elsewhere
-- **Restart**: Click restart button
-- **AI Toggle**: Enable/disable AI opponent
+## 🤝 Contributing
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md).
 
-## Contributing
-1. Fork the repository
-2. Create a feature branch
-3. Commit changes
-4. Push to the branch
-5. Open a Pull Request
+## 📄 License
+MIT License - See [LICENSE](LICENSE) for details.
 
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 👥 Team
+- Vishnu Sai Nadimpalli - Full Stack Developer
+- [Additional team members if any]
 
-## Acknowledgments
-- Chess.js for chess logic
-- p5.js for rendering
-- Firebase for backend services
-- Google AI for chess coach functionality
+## 🙏 Acknowledgments
+- Chess.js library
+- Firebase platform
+- Google Gemini Pro API
+- React community
