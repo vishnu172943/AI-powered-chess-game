@@ -78,8 +78,8 @@ const GameComponent = () => {
           </button>
         </div>
       </div>
-      <div className="game-layout">
-        <div className="left-panel">
+      <div className="game-layout expanded">
+        <div className="left-panel expanded">
           <button 
             className="restart-btn"
             onClick={handleRestart}
@@ -88,8 +88,10 @@ const GameComponent = () => {
           </button>
           <MoveHistory />
         </div>
-        <ChessBoard />
-        <div className="right-panel">
+        <div className="board-container">
+          <ChessBoard />
+        </div>
+        <div className="right-panel expanded">
           <ChessCoach />
         </div>
       </div>

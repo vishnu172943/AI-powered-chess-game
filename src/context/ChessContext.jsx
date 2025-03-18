@@ -109,7 +109,8 @@ export const ChessProvider = ({ children }) => {
     setMoves([]);
     setSelectedPiece(null);
     setLegalMoves([]);
-    setMessage('Game reset!');
+    setMessage('Game reset! Start fresh!');
+    setLastInvalidMove(null); // Reset invalid move tracking
   }, [chess]);
 
   const startNewGame = useCallback(async (userId) => {

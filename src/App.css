@@ -91,7 +91,7 @@ button:disabled {
 
 /* Move history */
 .move-history {
-  max-height: 300px;
+  max-height: 500px; /* Increased height */
   overflow-y: auto;
   padding: 15px;
   border-radius: 12px;
@@ -185,17 +185,17 @@ button:disabled {
 }
 
 .app-container {
-  max-width: 1200px;
+  max-width: 1600px; /* Increased from 1200px */
+  width: 95%;
   margin: 0 auto;
   padding: 20px;
-  text-align: center;
 }
 
 .game-layout {
   display: grid;
-  grid-template-columns: 200px auto 350px; /* Adjusted column widths */
-  gap: 25px; /* Increased gap */
-  padding: 20px;
+  grid-template-columns: 300px auto 400px; /* Increased widths */
+  gap: 30px; /* Increased gap */
+  padding: 25px;
   background: #fff;
   border-radius: 12px;
   box-shadow: var(--shadow-soft);
@@ -206,8 +206,17 @@ button:disabled {
   width: 200px; /* Reduced width */
 }
 
+.left-panel.expanded {
+  width: 300px; /* Increased from 200px */
+  margin-left: 0;
+}
+
 .right-panel {
   width: 350px; /* Increased width */
+}
+
+.right-panel.expanded {
+  width: 400px; /* Increased from 350px */
 }
 
 .hint-box {
@@ -718,7 +727,7 @@ copy-btn:hover {
 .chess-coach {
   display: flex;
   flex-direction: column;
-  height: 600px; /* Fixed height */
+  height: 500px; /* Match chess board height */
   background: white;
   border-radius: 12px;
   box-shadow: var(--shadow-soft);
@@ -727,16 +736,9 @@ copy-btn:hover {
 }
 
 .coach-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 15px;
-  background: linear-gradient(145deg, var(--primary-blue), var(--primary-purple));
-  color: white;
-}
-
-.coach-header h3 {
-  margin: 0;
+  height: 60px; /* Fixed height for header */
+  min-height: 60px;
+  box-sizing: border-box;
 }
 
 .coach-chat {
@@ -747,6 +749,8 @@ copy-btn:hover {
   flex-direction: column;
   gap: 10px;
   justify-content: flex-start; /* Starts from top */
+  scroll-behavior: smooth; /* Smooth scrolling */
+  max-height: calc(500px - 60px - 64px); /* Board height - header - input */
 }
 
 .chat-message {
@@ -754,6 +758,7 @@ copy-btn:hover {
   gap: 10px;
   max-width: 85%;
   align-self: flex-start; /* Aligns messages to start */
+  animation: fadeIn 0.3s ease-out;
 }
 
 .chat-message.user {
@@ -783,11 +788,13 @@ copy-btn:hover {
   position: sticky;
   bottom: 0;
   background: #f8f9fa;
-  padding: 15px;
+  padding: 12px;
   border-top: 1px solid #dee2e6;
-  margin-top: auto;
-  z-index: 10;
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  height: 64px; /* Fixed height for input area */
+  box-sizing: border-box;
 }
 
 .coach-input input {
@@ -847,4 +854,161 @@ copy-btn:hover {
   font-style: italic;
   padding: 20px;
   margin: auto;
+}
+
+.thinking-message {
+  opacity: 0.8;
+  animation: pulse 1.5s infinite;
+}
+
+.thinking-dots .dots {
+  display: inline-block;
+  animation: ellipsis 1.5s infinite;
+  margin-left: 4px;
+}
+
+@keyframes ellipsis {
+  0% { content: '.'; }
+  33% { content: '..'; }
+  66% { content: '...'; }
+  100% { content: ''; }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.coach-actions {
+  padding: 8px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+}
+
+.quick-hint-btn {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.quick-hint-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.quick-hint-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.coach-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border-top: 1px solid #eee;
+}
+
+.quick-hint-btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-soft);
+  width: 100%;
+}
+
+.quick-hint-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.quick-hint-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+  transform: none;
+}
+
+.hint-toggle-btn {
+  width: 100%;
+  margin-bottom: 10px;
+  background: var(--gradient-secondary);
+  color: #333;
+  border: 1px solid #ddd;
+  transition: all 0.3s ease;
+}
+
+.hint-toggle-btn.active {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+}
+
+.board-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 10px;
+}
+
+.coach-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.coach-header {
+  padding: 10px 15px;
+  background: linear-gradient(145deg, var(--primary-blue), var(--primary-purple));
+  color: white;
+}
+
+.coach-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+@media (max-width: 1600px) {
+  .game-layout {
+    grid-template-columns: 250px auto 350px;
+    gap: 20px;
+  }
+  
+  .left-panel.expanded {
+    width: 250px;
+  }
+  
+  .right-panel.expanded {
+    width: 350px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .game-layout {
+    grid-template-columns: 200px auto 300px;
+    gap: 15px;
+  }
+  
+  .left-panel.expanded {
+    width: 200px;
+  }
+  
+  .right-panel.expanded {
+    width: 300px;
+  }
 }

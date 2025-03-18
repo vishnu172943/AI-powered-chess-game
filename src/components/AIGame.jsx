@@ -15,34 +15,64 @@ const AIGame = () => {
     setAiError(null);
     
     try {
-      if (retryCount >= 3) {
-        throw new Error('AI failed to make a valid move after multiple attempts');
+      if (chess.isGameOver()) {
+        setAiEnabled(false);
+        setMessage('Game is over!');
+        return;
       }
 
-      const aiMove = await getAIMove(chess.fen(), moves, lastInvalidMove);
-      console.log('AI attempting move:', aiMove);
-      
-      const result = await handleMove(aiMove.from, aiMove.to);
-      if (!result) {
-        setLastInvalidMove(aiMove);
-        setRetryCount(prev => prev + 1);
-        // Retry with the invalid move information
-        return makeAIMove();
+      // Log current game state for debugging
+      console.log('Current Game State:', {
+        fen: chess.fen(),
+        turn: chess.turn(),
+        validMoves: chess.moves({ verbose: true }),
+        moveHistory: moves
+      });
+
+      let attempts = 0;
+      const maxAttempts = 3;
+
+      while (attempts < maxAttempts) {
+        try {
+          const aiMove = await getAIMove(chess.fen(), moves, lastInvalidMove);
+          console.log('AI suggested move:', aiMove);
+          
+          // Verify move is valid
+          const validMoves = chess.moves({ verbose: true });
+          const isValidMove = validMoves.some(
+            move => move.from === aiMove.from && move.to === aiMove.to
+          );
+
+          if (!isValidMove) {
+            console.warn('Invalid move suggested:', aiMove);
+            throw new Error('Invalid move');
+          }
+
+          // Make the move
+          const moveResult = await handleMove(aiMove.from, aiMove.to);
+          if (moveResult) {
+            console.log('Move successful:', moveResult);
+            setLastInvalidMove(null);
+            return;
+          }
+          
+          setLastInvalidMove(aiMove);
+          attempts++;
+        } catch (moveError) {
+          console.warn(`Move attempt ${attempts + 1} failed:`, moveError);
+          attempts++;
+        }
       }
-      
-      // Reset counters on successful move
-      setRetryCount(0);
-      setLastInvalidMove(null);
-      setMessage('AI moved: ' + aiMove.from + ' to ' + aiMove.to);
+
+      throw new Error('Failed to make a valid move');
     } catch (error) {
       console.error('AI move error:', error);
       setAiError(error.message);
-      setMessage('AI error: ' + error.message);
       setAiEnabled(false);
     } finally {
       setIsAIThinking(false);
     }
-  }, [chess, moves, handleMove, setMessage, lastInvalidMove, retryCount]);
+  }, [chess, moves, handleMove, lastInvalidMove]);
 
   useEffect(() => {
     if (aiEnabled && chess.turn() === 'b' && !chess.isGameOver()) {

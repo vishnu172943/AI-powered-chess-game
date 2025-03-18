@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext, memo, useCallback } from 'react';
+import React, { useEffect, useRef, useContext, memo, useCallback, useMemo } from 'react';
 import p5 from 'p5';
 import { ChessContext } from '../context/ChessContext';
 import { useGame } from '../context/GameContext';
@@ -253,19 +253,39 @@ const ChessBoard = memo(() => {
     }
   }, [chess.turn(), gameId, userColor]);
 
-  // Update sound file references
-  const moveSound = useRef(new Audio('/sounds/ficha-de-ajedrez-34722.mp3'));
-  const captureSound = useRef(new Audio('/sounds/chess-pieces-hitting-wooden-board-99336.mp3'));
-  
-  const playMoveSound = useCallback((move) => {
-    if (move.captured) {
-      captureSound.current.currentTime = 0; // Reset sound to start
-      captureSound.current.play().catch(() => {});
-    } else {
-      moveSound.current.currentTime = 0; // Reset sound to start
-      moveSound.current.play().catch(() => {});
-    }
+  // Pre-load and optimize sounds
+  const moveSound = useMemo(() => {
+    const audio = new Audio('/sounds/ficha-de-ajedrez-34722.mp3');
+    audio.preload = 'auto'; // Preload the sound
+    audio.volume = 0.6; // Reduce volume for better performance
+    return audio;
   }, []);
+
+  const captureSound = useMemo(() => {
+    const audio = new Audio('/sounds/chess-pieces-hitting-wooden-board-99336.mp3');
+    audio.preload = 'auto';
+    audio.volume = 0.6;
+    return audio;
+  }, []);
+
+  // Optimized sound playing function
+  const playMoveSound = useCallback((move) => {
+    try {
+      const sound = move.captured ? captureSound : moveSound;
+      
+      // Reset and play with timeout to prevent overlapping
+      sound.currentTime = 0;
+      const playPromise = sound.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.warn('Sound playback failed:', error);
+        });
+      }
+    } catch (error) {
+      console.warn('Sound error:', error);
+    }
+  }, [moveSound, captureSound]);
 
   useEffect(() => {
     const sketch = createSketch({
@@ -312,6 +332,16 @@ const ChessBoard = memo(() => {
       p5InstanceRef.current.redraw();
     }
   }, [chess.fen(), selectedPiece, legalMoves]);
+
+  useEffect(() => {
+    // Cleanup sounds on unmount
+    return () => {
+      moveSound.pause();
+      captureSound.pause();
+      moveSound.currentTime = 0;
+      captureSound.currentTime = 0;
+    };
+  }, [moveSound, captureSound]);
 
   return <div ref={sketchRef} style={{ width: 500, height: 500, cursor: 'default' }}></div>;
 });

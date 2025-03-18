@@ -1,104 +1,128 @@
-# AI-Powered Kids Chess Game
+# AI-Powered Kids Chess Game 🎮
 
-An interactive chess learning platform designed for kids, featuring AI assistance and a friendly chess coach.
+An interactive chess learning platform designed specifically for kids, featuring multiple AI engines and a friendly chess coach.
 
-## 🎮 Live Demo
-**[Play Now](https://ai-powered-chess-game.vercel.app/)**
+## 🌟 Live Demo
+[Play Now](https://ai-powered-chess-game.vercel.app/)
 
-## ✨ Key Features
+## 🎯 Key Features
 
-### Intelligent Gameplay
-- Play against adaptive AI opponent
-- Real-time move analysis
-- Interactive chess coach for learning
-- Legal move highlighting
-- Drag-and-drop interface
+### AI Opponents
+- DeepSeek AI Engine
+- Adaptive difficulty
+- Smart move validation
+- Real-time analysis
+- Learning from invalid moves
+- Move suggestions
 
-### Multiplayer Experience
-- Play with friends online
-- Easy game sharing with IDs
-- Real-time game synchronization
-- Move history tracking
+### Interactive Chess Coach
+- Real-time position analysis
+- Kid-friendly explanations
+- Strategic advice
+- Custom move suggestions
+- Emoji-rich responses
 
 ### Learning Tools
-- 🧙‍♂️ AI Chess Coach
-  - Friendly conversation
-  - Strategic advice
-  - Kid-friendly explanations
-  - Real-time position analysis
-- Visual move suggestions
-- Beginner-friendly interface
-
-### Kid-Friendly Design
-- Clear, intuitive interface
-- Engaging animations
+- Move highlighting
+- Valid move suggestions
+- Capture animations
 - Sound effects
-- Progress tracking
-- Easy navigation
+- Move history tracking
 
-## 🛠️ Technologies Used
-- **Frontend**: React, p5.js
-- **Backend**: Firebase
-- **AI/ML**: Google Gemini Pro API
-- **Game Logic**: chess.js
-- **Authentication**: Firebase Auth
-- **Database**: Firestore
+### Multiplayer Features
+- Play with friends
+- Real-time game syncing
+- Easy game sharing
+- Live move updates
+- Chat functionality
 
-## 🚀 Getting Started
+## 🛠️ Technical Stack
 
-### Quick Start
-Visit [https://ai-powered-chess-game.vercel.app/](https://ai-powered-chess-game.vercel.app/)
+### Frontend
+- React + Vite
+- p5.js for chess board
+- Firebase Auth
+- Real-time updates
 
-### Local Development
-1. Clone the repository
+### AI Integration
+- OpenRouter API
+- DeepSeek Chat model
+- Chess.js for move validation
+- Real-time move analysis
+- Position evaluation
+
+### Backend
+- Firebase
+- Firestore Database
+- Real-time listeners
+- Secure authentication
+
+## 🚀 Quick Start
+
+1. **Clone & Install**
 ```bash
 git clone https://github.com/yourusername/chess-game-react.git
 cd chess-game-react
-```
-
-2. Install dependencies
-```bash
 npm install
 ```
 
-3. Set up environment variables
-```bash
-VITE_FIREBASE_API_KEY=your_api_key
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_GEMINI_API_KEY=your_gemini_api_key
+2. **Configure Environment**
+Create `.env` file:
+```env
+VITE_FIREBASE_API_KEY=your_firebase_key
+VITE_OPENROUTER_API_KEY=your_openrouter_key
 ```
 
-4. Start development server
+3. **Run Development Server**
 ```bash
 npm run dev
 ```
 
-## 📖 How to Play
-1. **Sign In**: Create an account or play as guest
-2. **Choose Mode**: 
-   - Play vs AI
-   - Play with friend
-   - Practice mode
-3. **Move Pieces**: Drag and drop to move
-4. **Get Help**: Ask the chess coach for advice
-5. **Share Games**: Copy game ID to invite friends
+## 📱 Features in Detail
+
+### AI Chess Engine
+- Smart move suggestion
+- Invalid move learning
+- Position analysis
+- Move validation
+- Tactical awareness
+
+### Chess Coach
+- Beginner-friendly advice
+- Real-time analysis
+- Strategic guidance
+- Custom responses
+- Interactive learning
+
+### Game Modes
+- VS AI
+- VS Friend
+- Practice Mode
+- Analysis Mode
+
+## 🎨 UI/UX Features
+- Drag-and-drop pieces
+- Move highlighting
+- Capture animations
+- Sound effects
+- Responsive design
+
+## 🔒 Security
+- Firebase Authentication
+- Real-time validation
+- Secure API calls
+- Data encryption
+- Move verification
 
 ## 🤝 Contributing
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md).
+1. Fork the repository
+2. Create feature branch
+3. Commit changes
+4. Push to branch
+5. Create Pull Request
 
 ## 📄 License
-MIT License - See [LICENSE](LICENSE) for details.
+MIT License
 
-## 👥 Team
-<<<<<<< HEAD
-- Vishnu - Full Stack Developer
-=======
-- Vishnu  - Full Stack Developer
->>>>>>> 52f75e9d4f8960a748f30a2867f46ed2449eac8f
- 
-
-## 🙏 Acknowledgments
-- Chess.js library
-- Firebase platform
-- Google Gemini Pro API
-- React community
+## 👥 Developer
+Vishnu - Full Stack Developer
