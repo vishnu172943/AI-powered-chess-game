@@ -90,8 +90,8 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 MIT License - See [LICENSE](LICENSE) for details.
 
 ## 👥 Team
-- Vishnu Sai Nadimpalli - Full Stack Developer
-- [Additional team members if any]
+- Vishnu - Full Stack Developer
+ 
 
 ## 🙏 Acknowledgments
 - Chess.js library

@@ -253,14 +253,16 @@ const ChessBoard = memo(() => {
     }
   }, [chess.turn(), gameId, userColor]);
 
-  // Add sound effects
-  const moveSound = useRef(new Audio('/sounds/move.mp3'));
-  const captureSound = useRef(new Audio('/sounds/capture.mp3'));
+  // Update sound file references
+  const moveSound = useRef(new Audio('/sounds/ficha-de-ajedrez-34722.mp3'));
+  const captureSound = useRef(new Audio('/sounds/chess-pieces-hitting-wooden-board-99336.mp3'));
   
   const playMoveSound = useCallback((move) => {
     if (move.captured) {
+      captureSound.current.currentTime = 0; // Reset sound to start
       captureSound.current.play().catch(() => {});
     } else {
+      moveSound.current.currentTime = 0; // Reset sound to start
       moveSound.current.play().catch(() => {});
     }
   }, []);
