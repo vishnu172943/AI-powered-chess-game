@@ -2,35 +2,24 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI("AIzaSyASZKJ_vIYSHYbHcFbL8hzOJGzMvi2fir0");
 
-export const getChessAdvice = async (fen, moveHistory, playerColor, question, boardState = null) => {
+export const getChessAdvice = async (question) => {
   try {
-    // Create game context only for position-specific questions
-    const gameContext = boardState ? {
-      position: fen,
-      turn: playerColor,
-      board: boardState,
-      lastMoves: moveHistory.slice(-3),
-      inCheck: fen.includes('+'),
-      material: calculateMaterialBalance(boardState)
-    } : null;
+    const prompt = `You are an elite chess coach providing concise, high-quality instruction.
 
-    const prompt = `You are a friendly chess coach for children.
-      ${gameContext ? `
-      Current Game State:
-      - Position: ${gameContext.position}
-      - Turn: ${gameContext.turn}
-      - Material Balance: ${JSON.stringify(gameContext.material)}
-      - Recent Moves: ${JSON.stringify(gameContext.lastMoves)}
-      ` : ''}
+    Question: "${question}"
 
-      Question: ${question}
-
-      Please provide:
-      1. A ${gameContext ? 'specific analysis of the current position' : 'general chess advice'}
-      2. Use simple, kid-friendly language
-      3. Keep the response short and encouraging
-      4. Include a relevant emoji
-      5. Focus on one key point`;
+    Response Guidelines:
+    1. Be direct and precise
+    2. Limit to 2-3 short sentences
+    3. If discussing moves:
+       - State move + single-line reasoning
+    4. If explaining strategy:
+       - One key principle
+       - Clear actionable advice
+    5. Format:
+       - No greetings/pleasantries
+       - Direct strategic insight
+       - Optional single emoji at end`;
 
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
@@ -43,8 +32,10 @@ export const getChessAdvice = async (fen, moveHistory, playerColor, question, bo
       body: JSON.stringify({
         model: 'deepseek/deepseek-chat:free',
         messages: [{ role: 'user', content: prompt }],
-        max_tokens: 150,
-        temperature: gameContext ? 0.7 : 0.9  // More creative for general questions
+        max_tokens: 75, // Shorter responses
+        temperature: 0.5, // More focused responses
+        presence_penalty: 0.3,
+        frequency_penalty: 0.3
       })
     });
 
@@ -55,6 +46,44 @@ export const getChessAdvice = async (fen, moveHistory, playerColor, question, bo
     return data.choices[0].message.content;
   } catch (error) {
     console.error('Chess coach error:', error);
+    throw error;
+  }
+};
+
+export const getDeepSeekResponse = async (userInput) => {
+  try {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer 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',
+        'HTTP-Referer': 'https://ai-powered-chess-game.vercel.app',
+        'X-Title': 'DeepSeek Chat',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'deepseek/deepseek-chat:free',
+        messages: [{ 
+          role: 'user', 
+          content: `You are DeepSeek v3, an AI assistant engaging in natural conversation.
+          
+          User input: "${userInput}"
+          
+          Respond naturally and informatively. No length restrictions.`
+        }],
+        max_tokens: 1000, // Increased for more natural responses
+        temperature: 0.8,  // Increased for more creative responses
+        frequency_penalty: 0.5,
+        presence_penalty: 0.5
+      })
+    });
+
+    const data = await response.json();
+    if (!data || !data.choices || !data.choices[0]?.message?.content) {
+      throw new Error('Invalid response from AI');
+    }
+    return data.choices[0].message.content;
+  } catch (error) {
+    console.error('DeepSeek error:', error);
     throw error;
   }
 };

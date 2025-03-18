@@ -8,7 +8,7 @@ import GameSetup from './GameSetup';
 import { ChessContext } from '../context/ChessContext';
 import { useGame } from '../context/GameContext';
 import AIGame from './AIGame';
-import ChessCoach from './ChessCoach'; // New import
+import DeepSeekChat from './DeepSeekChat'; // Update this import line
 
 const GameComponent = () => {
   const { chess, resetGame } = useContext(ChessContext);
@@ -92,7 +92,7 @@ const GameComponent = () => {
           <ChessBoard />
         </div>
         <div className="right-panel expanded">
-          <ChessCoach />
+          <DeepSeekChat />
         </div>
       </div>
     </div>

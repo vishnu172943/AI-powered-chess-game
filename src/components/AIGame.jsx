@@ -17,54 +17,44 @@ const AIGame = () => {
     try {
       if (chess.isGameOver()) {
         setAiEnabled(false);
-        setMessage('Game is over!');
         return;
       }
 
-      // Log current game state for debugging
-      console.log('Current Game State:', {
-        fen: chess.fen(),
-        turn: chess.turn(),
-        validMoves: chess.moves({ verbose: true }),
-        moveHistory: moves
-      });
+      const validMoves = chess.moves({ verbose: true });
+      const attempts = { count: 0, maxTries: 3 };
 
-      let attempts = 0;
-      const maxAttempts = 3;
-
-      while (attempts < maxAttempts) {
+      while (attempts.count < attempts.maxTries) {
         try {
-          const aiMove = await getAIMove(chess.fen(), moves, lastInvalidMove);
-          console.log('AI suggested move:', aiMove);
-          
-          // Verify move is valid
-          const validMoves = chess.moves({ verbose: true });
-          const isValidMove = validMoves.some(
-            move => move.from === aiMove.from && move.to === aiMove.to
+          const aiMove = await getAIMove(
+            chess.fen(),
+            moves,
+            attempts.count > 0 ? lastInvalidMove : null
           );
 
-          if (!isValidMove) {
-            console.warn('Invalid move suggested:', aiMove);
-            throw new Error('Invalid move');
-          }
-
-          // Make the move
-          const moveResult = await handleMove(aiMove.from, aiMove.to);
-          if (moveResult) {
-            console.log('Move successful:', moveResult);
-            setLastInvalidMove(null);
-            return;
+          if (validMoves.some(move => 
+            move.from === aiMove.from && move.to === aiMove.to
+          )) {
+            const result = await handleMove(aiMove.from, aiMove.to);
+            if (result) {
+              setLastInvalidMove(null);
+              return;
+            }
           }
           
-          setLastInvalidMove(aiMove);
-          attempts++;
+          attempts.count++;
+          setLastInvalidMove({
+            move: aiMove,
+            error: 'Invalid move, retrying with feedback',
+            attempt: attempts.count
+          });
+          
         } catch (moveError) {
-          console.warn(`Move attempt ${attempts + 1} failed:`, moveError);
-          attempts++;
+          attempts.count++;
+          console.error(`AI move attempt ${attempts.count} failed:`, moveError);
         }
       }
 
-      throw new Error('Failed to make a valid move');
+      throw new Error('Failed to make a valid move after multiple attempts');
     } catch (error) {
       console.error('AI move error:', error);
       setAiError(error.message);
