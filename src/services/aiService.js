@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI("AIzaSyB9HunDorjXpQcUM8LqaKeeckDPMs8Q2cg");
+const genAI = new GoogleGenerativeAI("AIzaSyASZKJ_vIYSHYbHcFbL8hzOJGzMvi2fir0");
 
 export const getAIMove = async (fen, moveHistory, lastInvalidMove = null) => {
   try {
