@@ -90,7 +90,11 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 MIT License - See [LICENSE](LICENSE) for details.
 
 ## 👥 Team
+<<<<<<< HEAD
 - Vishnu - Full Stack Developer
+=======
+- Vishnu  - Full Stack Developer
+>>>>>>> 52f75e9d4f8960a748f30a2867f46ed2449eac8f
  
 
 ## 🙏 Acknowledgments
