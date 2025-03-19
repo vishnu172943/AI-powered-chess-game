@@ -1,90 +1,48 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import axios from 'axios';
+import { OPENROUTER_ENDPOINT, OPENROUTER_HEADERS, AI_CONFIG } from '../config/ai-config';
 
-const genAI = new GoogleGenerativeAI("AIzaSyASZKJ_vIYSHYbHcFbL8hzOJGzMvi2fir0");
+const api = axios.create({
+  timeout: 10000,
+  headers: OPENROUTER_HEADERS
+});
 
 export const getChessAdvice = async (question) => {
   try {
-    const prompt = `You are an elite chess coach providing concise, high-quality instruction.
+    const payload = {
+      model: AI_CONFIG.model,
+      messages: [{
+        role: "user",
+        content: `You are an elite chess coach. Provide concise advice for: ${question}. Keep response under 3 sentences.`
+      }],
+      temperature: 0.7,
+      max_tokens: 150
+    };
 
-    Question: "${question}"
-
-    Response Guidelines:
-    1. Be direct and precise
-    2. Limit to 2-3 short sentences
-    3. If discussing moves:
-       - State move + single-line reasoning
-    4. If explaining strategy:
-       - One key principle
-       - Clear actionable advice
-    5. Format:
-       - No greetings/pleasantries
-       - Direct strategic insight
-       - Optional single emoji at end`;
-
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer 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',
-        'HTTP-Referer': 'https://ai-powered-chess-game.vercel.app/',
-        'X-Title': 'Kids Chess Game',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'deepseek/deepseek-chat:free',
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 75, // Shorter responses
-        temperature: 0.5, // More focused responses
-        presence_penalty: 0.3,
-        frequency_penalty: 0.3
-      })
-    });
-
-    const data = await response.json();
-    if (!data || !data.choices || !data.choices[0]?.message?.content) {
-      throw new Error('Invalid response from AI');
-    }
-    return data.choices[0].message.content;
+    const response = await api.post(OPENROUTER_ENDPOINT, payload);
+    return response.data.choices[0]?.message?.content || "I need a moment to think about this position...";
   } catch (error) {
     console.error('Chess coach error:', error);
-    throw error;
+    return "I apologize, I'm having trouble analyzing right now.";
   }
 };
 
 export const getDeepSeekResponse = async (userInput) => {
   try {
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer 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',
-        'HTTP-Referer': 'https://ai-powered-chess-game.vercel.app',
-        'X-Title': 'DeepSeek Chat',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'deepseek/deepseek-chat:free',
-        messages: [{ 
-          role: 'user', 
-          content: `You are DeepSeek v3, an AI assistant engaging in natural conversation.
-          
-          User input: "${userInput}"
-          
-          Respond naturally and informatively. No length restrictions.`
-        }],
-        max_tokens: 1000, // Increased for more natural responses
-        temperature: 0.8,  // Increased for more creative responses
-        frequency_penalty: 0.5,
-        presence_penalty: 0.5
-      })
-    });
+    const payload = {
+      model: AI_CONFIG.model,
+      messages: [{
+        role: "user",
+        content: `You are a friendly chess assistant. ${userInput}`
+      }],
+      temperature: 0.7,
+      max_tokens: 150
+    };
 
-    const data = await response.json();
-    if (!data || !data.choices || !data.choices[0]?.message?.content) {
-      throw new Error('Invalid response from AI');
-    }
-    return data.choices[0].message.content;
+    const response = await api.post(OPENROUTER_ENDPOINT, payload);
+    return response.data.choices[0]?.message?.content || "I'm having trouble processing that request.";
   } catch (error) {
-    console.error('DeepSeek error:', error);
-    throw error;
+    console.error('Assistant error:', error);
+    return "I apologize, I'm experiencing technical difficulties.";
   }
 };
 

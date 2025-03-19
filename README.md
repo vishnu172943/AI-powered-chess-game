@@ -78,6 +78,17 @@ VITE_OPENROUTER_API_KEY=your_openrouter_key
 npm run dev
 ```
 
+## Environment Setup
+
+1. Create a `.env` file in the root directory
+2. Copy contents from `.env.example`
+3. Replace placeholder values with your actual API keys
+
+Required environment variables:
+- VITE_OPENROUTER_API_KEY: Your OpenRouter API key
+- VITE_APP_URL: Your application URL
+- VITE_APP_NAME: Your application name
+
 ## 📱 Features in Detail
 
 ### AI Chess Engine

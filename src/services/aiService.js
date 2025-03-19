@@ -1,80 +1,75 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Chess } from 'chess.js';
+import axios from 'axios';
+import { OPENROUTER_ENDPOINT, OPENROUTER_HEADERS, AI_CONFIG } from '../config/ai-config';
 
-const genAI = new GoogleGenerativeAI("AIzaSyASZKJ_vIYSHYbHcFbL8hzOJGzMvi2fir0");
+// Create axios instance with default config
+const api = axios.create({
+  timeout: 10000,
+  headers: OPENROUTER_HEADERS
+});
+
+// Helper function to wait between retries
+const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const getAIMove = async (fen, moveHistory, lastInvalidMove = null) => {
-  try {
-    const tempChess = new Chess(fen);
-    const validMoves = tempChess.moves({ verbose: true });
+  let lastError = null;
 
-    // Format valid moves in a clear way for the AI
-    const formattedValidMoves = validMoves.map(move => ({
-      from: move.from,
-      to: move.to,
-      piece: move.piece,
-      captured: move.captured || null,
-      san: move.san,
-      flags: move.flags
-    }));
+  for (let attempt = 0; attempt < AI_CONFIG.maxRetries; attempt++) {
+    try {
+      const tempChess = new Chess(fen);
+      const validMoves = tempChess.moves({ verbose: true });
+      
+      // Simplified move format for clearer AI understanding
+      const formattedMoves = validMoves.map(move => ({
+        notation: move.san,
+        from: move.from,
+        to: move.to
+      }));
 
-    const prompt = `You are a chess engine. Select ONE valid move from the following list:
+      const payload = {
+        model: AI_CONFIG.model,
+        messages: [{
+          role: "user",
+          content: `As a chess engine, select a valid move from: ${JSON.stringify(formattedMoves)}. Current FEN: ${fen}. Previous moves: ${JSON.stringify(moveHistory?.slice(-2))}. Respond ONLY with move in format "from:e2 to:e4"`
+        }],
+        temperature: AI_CONFIG.temperatures[attempt],
+        max_tokens: AI_CONFIG.maxTokens
+      };
 
-    Valid Moves Available:
-    ${JSON.stringify(formattedValidMoves, null, 2)}
+      const response = await api.post(OPENROUTER_ENDPOINT, payload);
+      const moveText = response.data.choices[0]?.message?.content?.trim();
+      console.log('AI response:', moveText); // For debugging
 
-    Instructions:
-    1. Choose ONLY from the moves listed above
-    2. Return the move in format: "from:e2 to:e4"
-    3. No other text or explanation needed
+      const moveMatch = moveText.match(/from:([a-h][1-8])\s+to:([a-h][1-8])/);
+      
+      if (!moveMatch) {
+        throw new Error('Invalid move format received');
+      }
 
-    Return move in specified format only.`;
+      const proposedMove = {
+        from: moveMatch[1],
+        to: moveMatch[2]
+      };
 
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer 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',
-        'HTTP-Referer': 'https://ai-powered-chess-game.vercel.app',
-        'X-Title': 'Chess AI Engine',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'deepseek/deepseek-chat:free', // Updated correct model ID
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 20,
-        temperature: 0.3
-      })
-    });
+      // Verify move is valid
+      if (validMoves.some(move => move.from === proposedMove.from && move.to === proposedMove.to)) {
+        console.log('Valid move found:', proposedMove);
+        return proposedMove;
+      }
 
-    const data = await response.json();
-    console.log('AI Response:', data);
-
-    const moveText = data.choices[0]?.message?.content?.trim();
-    const moveMatch = moveText.match(/from:([a-h][1-8])\s+to:([a-h][1-8])/);
-    
-    if (!moveMatch) {
-      throw new Error('Invalid move format from AI');
+      throw new Error('Move not in valid moves list');
+    } catch (error) {
+      if (error.response?.status === 503) {
+        // Model is loading, wait longer
+        await wait(AI_CONFIG.waitBetweenRetries * 2);
+      }
+      console.error(`Attempt ${attempt + 1} failed:`, error.message);
+      lastError = error;
+      await wait(AI_CONFIG.waitBetweenRetries);
     }
-
-    const proposedMove = {
-      from: moveMatch[1],
-      to: moveMatch[2]
-    };
-
-    // Verify the move is in our valid moves list
-    const isValidMove = validMoves.some(
-      move => move.from === proposedMove.from && move.to === proposedMove.to
-    );
-
-    if (!isValidMove) {
-      throw new Error('AI suggested move not in valid moves list');
-    }
-
-    return proposedMove;
-  } catch (error) {
-    console.error('AI move error:', error);
-    throw error;
   }
+
+  throw new Error(`Failed after ${AI_CONFIG.maxRetries} attempts. Last error: ${lastError?.message}`);
 };
 
 // Helper function to visualize the board
